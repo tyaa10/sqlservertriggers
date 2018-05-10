@@ -1,0 +1,27 @@
+--======================================
+--  Create T-SQL Trigger Template
+--======================================
+USE library
+GO
+
+IF OBJECT_ID ('dbo.tr_delete','TR') IS NOT NULL
+   DROP TRIGGER dbo.tr_delete 
+GO
+
+ALTER TRIGGER dbo.tr_delete 
+   ON  dbo.Books2 
+   INSTEAD OF DELETE
+AS
+BEGIN
+	SET NOCOUNT ON;
+	UPDATE dbo.Books2
+	SET [Deleted] = 1
+	WHERE (SELECT DISTINCT id FROM deleted) = dbo.Books2.id
+END;
+GO
+EXEC dbo.sp_select_books2
+GO
+DELETE
+FROM Books2
+WHERE ID = 2;
+
